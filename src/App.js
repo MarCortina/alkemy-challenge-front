@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import "./App.css";
+import ModalLogin from "./components/ModalLogin/ModalLogin";
+import Home from "./pages/Home/Home";
+import Layout from "./pages/Layout/Layout";
+import { UserContextProvider } from "./context/UserContext";
+import UserContext from "./context/UserContext";
+import HeroDetails from "./components/HeroDetails/HeroDetails";
+import CardsHero from "./components/CardsHero/CardsHero";
+import Team from "./components/Team/Team";
 
 function App() {
+  const user = useContext(UserContext);
+  console.log("app", user.user);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <UserContextProvider>
+          <div className="App">
+            <Layout>
+              <Switch>
+                <Route component={HeroDetails} exact path="/heroes/:id"></Route>
+                <Route component={CardsHero} exact path="/cards_hero"></Route>
+                <Route component={ModalLogin} exact path="/"></Route>
+                <Route component={Team} exact path="/team"></Route>
+                <Route component={Home} exact path="/home"></Route>
+              </Switch>
+            </Layout>
+          </div>
+        </UserContextProvider>
+      </Router>
+    </>
   );
 }
 
