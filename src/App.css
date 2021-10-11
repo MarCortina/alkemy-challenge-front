@@ -1,8 +1,11 @@
 .App {
   text-align: center;
+  background-color: #d63031;
 }
 
-
+/* a{
+  text-decoration: none;
+} */
 
 /* @media (prefers-reduced-motion: no-preference) {
   .App-logo {

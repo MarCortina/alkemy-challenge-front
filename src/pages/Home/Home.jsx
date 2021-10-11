@@ -4,16 +4,20 @@ import Axios from "axios";
 import UserContext from "../../context/UserContext";
 import { useLocalStorage } from "../../useLocalStorage"; // eslint-disable-next-line
 import CardsHero from "../../components/CardsHero/CardsHero";
+import Loader from "../../components/Loader/Loader";
 import "./home.css";
+import Team from "../../components/Team/Team";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 const api = process.env.REACT_APP_API_URL;
 
-const Home = () => {
+const Home = ({ location }) => {
   const user = useContext(UserContext);
-  console.log("user en el home", user);
   const [searchHero, setSearchHero] = useState("");
   const [heroes, setHeroes] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [team, setTeam] = useLocalStorage("team", []);
-  const totalHero = team.length;
+  const totalHero = team?.length;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +27,7 @@ const Home = () => {
   };
 
   const getDataHero = async (search) => {
+    setLoading(true);
     try {
       const response = await Axios.get(`${api}search/${search}`);
       if (response.data.error) {
@@ -30,36 +35,40 @@ const Home = () => {
         setHeroes([]);
       } else {
         setHeroes(response?.data?.results);
-        console.log("response", response);
       }
     } catch (error) {
       alert(error);
       console.log(error);
     }
+    setLoading(false);
   };
-  // console.log("searchhero", searchHero);
-  // console.log("heroes", heroes);
-  // localStorage.setItem("heroes", JSON.stringify(heroes));
 
   useEffect(() => {}, [searchHero]);
+
   return (
     <>
+      {loading && <Loader />}
       <div className="home-container">
-        <h1>home</h1>
-        <Link to="/team">
-          <p>my teams have {totalHero} heroes</p>
-        </Link>
-
-        <form onSubmit={onSubmit}>
-          <input type="text" name="search" />
-          <button type="submit">search</button>
-        </form>
-
+        <div className="home-container__form">
+          <form onSubmit={onSubmit} className="form">
+            <div className="search-container">
+              <input type="text" name="search" className="search-input"></input>
+              <button className="search-button" type="submit">
+                <FontAwesomeIcon
+                  type="submit"
+                  icon={faSearch}
+                  size="2x"
+                  className="icon-search"
+                />
+              </button>
+            </div>
+          </form>
+        </div>
         {searchHero ? (
           <div>
             <h2>{searchHero}</h2>
             {heroes.length === 0 ? (
-              <p>No hay resultados. try again</p>
+              <p className="text-input">no results, try another name</p>
             ) : (
               <>
                 <CardsHero heroes={heroes} />
@@ -68,99 +77,21 @@ const Home = () => {
           </div>
         ) : (
           <div>
-            <h2>start find your hero</h2>
+            <p className="text-input">look for your hero</p>
           </div>
         )}
       </div>
+      <div className="team-container">
+        {/* <Link to="/team"> */}
+
+        {/* <p className="text-input-team">my teams have {totalHero} heroes</p> */}
+        {/* </Link> */}
+
+        <Team team={team} />
+      </div>
+      {/* <Team /> */}
     </>
   );
 };
 
 export default Home;
-
-// {user ? (
-//   <div className="container">
-//     <div className="row">
-//       <div className="col-md-12">
-//         <h1>Bienvenido {user.name}</h1>
-//       </div>
-//     </div>
-//     <div className="row">
-//       <div className="col-md-12">
-//         <form onSubmit={onSubmit}>
-//           <div className="form-group">
-//             <label htmlFor="search">Buscar Heroe</label>
-//             <input
-//               type="text"
-//               className="form-control"
-//               id="search"
-//               placeholder="Buscar Heroe"
-//               name="search"
-//             />
-//           </div>
-//           <button type="submit" className="btn btn-primary">
-//             Buscar
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//     <div className="row">
-//       <div className="col-md-12">
-//         <ul className="list-group">
-//           {heroes.map((hero) => (
-//             <li className="list-group-item" key={hero.id}>
-//               <img
-//                 src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
-//                 alt={hero.name}
-//               />
-//               <span>{hero.name}</span>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   </div>
-// ) : (
-//   <div className="container">
-//     <div className="row">
-//       <div className="col-md-12">
-//         <h1>Bienvenido</h1>
-//       </div>
-//     </div>
-//     <div className="row">
-//       <div className="col-md-12">
-//         <form onSubmit={onSubmit}>
-//           <div className="form-group">
-//             <label htmlFor="search">Buscar Heroe</label>
-//             <input
-
-//               type="text"
-//               className="form-control"
-//               id="search"
-//               placeholder="Buscar Heroe"
-//               name="search"
-//             />
-//           </div>
-//           <button type="submit" className="btn btn-primary">
-//             Buscar
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//     <div className="row">
-//       <div className="col-md-12">
-//         <ul className="list-group">
-//           {heroes.map((hero) => (
-//             <li className="list-group-item" key={hero.id}>
-//               <img
-//                 src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
-//                 alt={hero.name}
-//               />
-//               <span>{hero.name}</span>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   </div>
-// )}

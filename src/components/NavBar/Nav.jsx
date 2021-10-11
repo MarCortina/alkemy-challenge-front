@@ -1,64 +1,73 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
+import Loader from "../Loader/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCheck,
+  faHome,
+  faAddressCard,
+  faInfoCircle,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import "./nav.css";
 
-const Nav = () => {
-  const { user, setUser } = useContext(UserContext);
+const Nav = ({ setUser }) => {
+  const user = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
 
   const logout = () => {
-    setUser(null);
+    setIsLoading(true);
+    try {
+      setUser(null);
+      history.push("/");
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
   };
-
+  useEffect(() => {}, [user]);
   return (
     <div className="nav-container">
+      {isLoading && <Loader />}
       <div className="link-nav-container">
-        <Link className="link-nav" to={"/home"}>
-          Home
+        <Link className="link-nav" to={"/"}>
+          <FontAwesomeIcon icon={faHome} size="2x" />
+          <div>
+            Home
+          </div>
         </Link>
-        <a href="#about" className="link-nav">
-          About
+
+        <a href="https://campus.alkemy.org/challenges" className="link-nav">
+          <FontAwesomeIcon icon={faInfoCircle} size="2x" />
+          <div>About</div>
         </a>
-        <a href="#contact" className="link-nav">
-          Contact
+        <a href="https://www.linkedin.com/in/mar-cortina/" className="link-nav">
+          <FontAwesomeIcon icon={faAddressCard} size="2x" />
+          <div>Contact</div>
         </a>
         {user && (
           <button onClick={logout} className="button-logout">
-            Logout
+            <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
+            <div>Logout</div>
           </button>
         )}
       </div>
-      {user ? (
+      {user &&(
         <>
           <div className="user-container">
             <span className="span-nav-name">{user.name}</span>
 
-            {user?.picture?.data?.url ? (
-              <>
-                <div className="img-facebook-container">
-                  <img
-                    src={user?.picture?.data?.url}
-                    alt="img user"
-                    className="w-100 rounded-circle"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="img-facebook-container">
-                  <FontAwesomeIcon
-                    icon={faUserCheck}
-                    size="lg"
-                    className="w-100 rounded-circle"
-                  />
-                </div>
-              </>
-            )}
+            <div className="icon-user-login">
+              <FontAwesomeIcon
+                icon={faUserCheck}
+                size="2x"
+              />
+            </div>
           </div>
         </>
-      ) : null}
+      ) }
     </div>
   );
 };

@@ -3,26 +3,24 @@ import FormLogin from "../FormLogin/FormLogin";
 import UserContext from "../../context/UserContext";
 import "./modal.css";
 
-const ModalLogin = () => {
-  const context = useContext(UserContext);
+const ModalLogin = ({ setUser, location }) => {
+  const user = useContext(UserContext);
   const [show, setShow] = useState(true);
 
-
   useEffect(() => {
-    if (context?.user !== null) {
+    if (user !== null) {
       setShow(false);
-    }else{
+    } else {
       setShow(true);
     }
-  }, [context.user]);
-
+  }, [user]);
 
   return (
     <>
       {show ? (
         <div className="container-modal">
           <div className="modal-login">
-            <FormLogin />
+            <FormLogin setUser={setUser} />
           </div>
         </div>
       ) : null}

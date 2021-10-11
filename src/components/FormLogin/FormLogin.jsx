@@ -1,12 +1,23 @@
 import React, { useState, useContext, useEffect } from "react";
-import axios from "axios";
+import { useLocalStorage } from "../../useLocalStorage";
+import { useHistory } from "react-router-dom";
+import Loader from "../Loader/Loader";
+import Axios from "axios";
 import "./formLogin.css";
+import Alert from "../Alert/Alert";
 import { Formik } from "formik";
-import UserContext from "../../context/UserContext";
+// import UserContext from "../../context/UserContext";
+// import getInfo from "../../helpers/verifyToken.helpers";
 
-const FormLogin = () => {
-  const { user, setUser } = useContext(UserContext);
-  console.log("en el formmmmmmm", user);
+const FormLogin = ({ setUser, location }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUserContext] = useLocalStorage("user", []);
+  const [alert, setAlert] = useState({
+    show: false,  
+    message: "",
+    type: "",
+  });
+  const history = useHistory();
 
   const validate = (values) => {
     const errors = {};
@@ -26,27 +37,48 @@ const FormLogin = () => {
   };
 
   const onSubmit = async (values) => {
+    setIsLoading(true);
+    const { email, password, name } = values;
+
     try {
-      await axios.post(
+      const response = await Axios.post(
         `http://challenge-react.alkemy.org/?email=${values.email}&password=${values.password}`
       );
-      setUser(values);
-      alert("Login success");
+      const { token } = response.data;
+
+      setUserContext({
+        email,
+        password,
+        name,
+        token,
+      });
+      setUser({
+        email,
+        password,
+        name,
+        token,
+      });
+      setAlert({
+        show: true,
+        message: "Login Successful",
+        type: "success",
+      });
+      history.push("/");
     } catch (error) {
       console.log(error);
       alert("Login failed");
     }
-  };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     window.location.href = "/home";
-  //   }
-  // }, [user]);
+    setIsLoading(false);
+  };
+  useEffect(() => {
+  }, [user, alert]);
 
   return (
     <div>
-      <div className="">
+      {isLoading && <Loader />}
+      {alert.show && <Alert message={alert.message} type={alert.type} />}
+      <div className="login-container">
         <div className="container">
           <Formik
             initialValues={{ email: "", password: "", name: "" }}
@@ -111,11 +143,4 @@ const FormLogin = () => {
 };
 
 export default FormLogin;
-// axios
-//   .post(
-//     `http://challenge-react.alkemy.org/?email=${values.email}&password=${values.password}`
-//   )
-// .then((res) => {
-//   setUser(values);
-// })
-// .catch((error) => console.log(error));
+

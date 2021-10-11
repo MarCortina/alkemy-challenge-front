@@ -3,7 +3,7 @@ import "./footer.css"
 const Footer = () => {
   return (
     <div className="footer-container">
-      <span>Footer</span>
+      <span className="footer-text">@alkemy-challenge-react by mar cortina</span>
     </div>
   );
 };
