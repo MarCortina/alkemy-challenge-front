@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import ReactFacebookLogin from "react-facebook-login";
 import { useLocalStorage } from "../../useLocalStorage";
 import { useHistory } from "react-router-dom";
 import Loader from "../Loader/Loader";
@@ -11,7 +10,6 @@ import { Formik } from "formik";
 const FormLogin = ({ setUser, location }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUserContext] = useLocalStorage("user", []);
-  const [id, setId] = useLocalStorage("token", "");
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -36,11 +34,7 @@ const FormLogin = ({ setUser, location }) => {
     }
   };
 
-  const responseFacebook = (response) => {
-    const { id } = response;
-    setId(id);
-    console.log(response);
-  };
+ 
 
   const onSubmit = async (values) => {
     setIsLoading(true);
@@ -143,13 +137,7 @@ const FormLogin = ({ setUser, location }) => {
                 >
                   Submit
                 </button>
-                <ReactFacebookLogin
-                  appId="749678745813147"
-                  autoLoad={true}
-                  fields="name,email,picture"
-                  // onClick={componentClicked}
-                  callback={responseFacebook}
-                />
+              
               </form>
             )}
           </Formik>
