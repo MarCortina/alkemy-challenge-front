@@ -14,7 +14,8 @@ const Home = ({ location }) => {
   const [heroes, setHeroes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [team, setTeam] = useLocalStorage("team", []);
-
+  const [token, setToken] = useLocalStorage("token", "");
+  
   const onSubmit = (e) => {
     e.preventDefault();
     const search = e.target.elements.search.value;
@@ -25,7 +26,8 @@ const Home = ({ location }) => {
   const getDataHero = async (search) => {
     setLoading(true);
     try {
-      const response = await Axios.get(`${api}search/${search}`);
+      const response = await Axios.get(`${api}${token}/search/${search}`);
+      console.log("responseeeeeeeeee",response);
       if (response.data.error) {
         alert(response.data.error);
         setHeroes([]);
@@ -39,7 +41,9 @@ const Home = ({ location }) => {
     setLoading(false);
   };
 
-  useEffect(() => {}, [searchHero]);
+  useEffect(() => {
+    console.log("token",token)
+  }, [searchHero]);
 
   return (
     <>
