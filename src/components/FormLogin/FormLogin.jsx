@@ -6,8 +6,7 @@ import Axios from "axios";
 import "./formLogin.css";
 import Alert from "../Alert/Alert";
 import { Formik } from "formik";
-// import UserContext from "../../context/UserContext";
-// import getInfo from "../../helpers/verifyToken.helpers";
+
 
 const FormLogin = ({ setUser, location }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +65,12 @@ const FormLogin = ({ setUser, location }) => {
       history.push("/");
     } catch (error) {
       console.log(error);
-      alert("Login failed");
+      setAlert({
+        show: true,
+        message: "Login Failed",
+        type: "danger",
+      });
+      // alert("Login failed");
     }
 
     setIsLoading(false);
