@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import Axios from "axios";
-import UserContext from "../../context/UserContext";
 import { useLocalStorage } from "../../useLocalStorage"; // eslint-disable-next-line
 import CardsHero from "../../components/CardsHero/CardsHero";
 import Loader from "../../components/Loader/Loader";
@@ -12,12 +10,10 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 const api = process.env.REACT_APP_API_URL;
 
 const Home = ({ location }) => {
-  const user = useContext(UserContext);
   const [searchHero, setSearchHero] = useState("");
   const [heroes, setHeroes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [team, setTeam] = useLocalStorage("team", []);
-  // const totalHero = team?.length;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -82,14 +78,8 @@ const Home = ({ location }) => {
         )}
       </div>
       <div className="team-container">
-        {/* <Link to="/team"> */}
-
-        {/* <p className="text-input-team">my teams have {totalHero} heroes</p> */}
-        {/* </Link> */}
-
         <Team team={team} />
       </div>
-      {/* <Team /> */}
     </>
   );
 };
