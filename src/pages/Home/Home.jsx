@@ -17,7 +17,7 @@ const Home = ({ location }) => {
   const [heroes, setHeroes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [team, setTeam] = useLocalStorage("team", []);
-  const totalHero = team?.length;
+  // const totalHero = team?.length;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -67,7 +67,7 @@ const Home = ({ location }) => {
         {searchHero ? (
           <div>
             <h2>{searchHero}</h2>
-            {heroes.length === 0 ? (
+            {heroes?.length === 0 ? (
               <p className="text-input">no results, try another name</p>
             ) : (
               <>
